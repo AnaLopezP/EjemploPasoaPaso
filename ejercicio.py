@@ -54,3 +54,16 @@ async def get_uri_from_images_src(base_uri, images_src):
             yield mparsed.scheme + "://" + mparsed.netloc + path
             yield parsed.geturl()
         await asyncio.sleep(0.001)
+
+
+async def get_images(session, page_uri): #Recupera las uri de todas las imagenes de ua pagina
+    html = await wget(session, page_uri) #Volvemos a llamar a la funcion wget
+    if not html: #Entramos aquí si la web no es html
+        print("No se encuentra imagen", stderr)
+        return None
+    images_src_gen = get_images_src_from_html(html)
+    images_uri_gen = get_uri_from_images_src(page_uri, images_src_gen)
+    #Ahora recuperamos las imagenes
+    async for img in images_uri_gen:
+        print("Porcentaje de descarga" %img)
+        await descargar(session, img) #Llamamos a la funcion descargar con la imagen 

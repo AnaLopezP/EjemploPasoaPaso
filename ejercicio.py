@@ -67,3 +67,15 @@ async def get_images(session, page_uri): #Recupera las uri de todas las imagenes
     async for img in images_uri_gen:
         print("Porcentaje de descarga" %img)
         await descargar(session, img) #Llamamos a la funcion descargar con la imagen 
+
+#CÓDIGO PRINCIPAL
+async def main():
+    web_page_uri = "http://www.formation-python.com/"
+    async with ClientSession() as session:
+        await get_images(session, web_page_uri)
+
+asyncio.run(main())
+
+def write_in_file(nombre, contenido):
+    with open(nombre, "wb") as f:
+        f.write(contenido)

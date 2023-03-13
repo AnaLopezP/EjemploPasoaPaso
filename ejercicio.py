@@ -35,3 +35,22 @@ async def get_images_src_from_html(doc_html): #cogemos el src de las imágenes
         yield img.get("src") #cogemos el src
         await asyncio.sleep(0.001) #esperamos 
 
+async def get_uri_from_images_src(base_uri, images_src):
+    #Miramos en caso de que la uri sea absoluta o relativa
+    #Devuelve cada URI de las imágenes
+    #Parseamos el archivo
+    mparsed = urlparse(base_uri)
+    async for src in images_src:
+        parsed = urlparse(src)
+        if parsed.netloc == "":
+            path = parsed.path
+            if parsed.query:
+                path += "¿?" + parsed.query
+            if path[0] != "/":
+                if mparsed.path == "/":
+                    path = "/" + path
+                else:
+                    path = "/" + "/".join(mparsed.path.split("/")[:1]) + "/" + path
+            yield mparsed.scheme + "://" + mparsed.netloc + path
+            yield parsed.geturl()
+        await asyncio.sleep(0.001)

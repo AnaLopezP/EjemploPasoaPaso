@@ -79,3 +79,16 @@ asyncio.run(main())
 def write_in_file(nombre, contenido):
     with open(nombre, "wb") as f:
         f.write(contenido)
+
+async def download(session, uri):
+    contenido = await wget(session, uri)
+    if contenido is None:
+        return None
+    loop = asyncio.get_running_loop()
+    await loop.run_in_executor(None, partial(write_in_file, uri.split(sep)[-1], contenido))
+    return uri
+
+if __name__ == "__main__":
+    print("EMPEZANDO LA DESCARGA DEL TANG")
+    web_page_uri = "http://inspyration.org"
+    print(timeit("get_images(web_page_uri)", number = 10, setup = "from __main__ import get_images, web_page_uri"))

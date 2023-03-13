@@ -20,3 +20,12 @@ async def wget(session, uri): #Devuelve el contenido indicado por la URI
         else:
             return await response.read()
         
+async def descargar(session, uri):
+    #Para descargar el contenido de la URI
+    contenido = await wget(session, uri) #Llamamos a la funcion que nos da la URI
+    if contenido is None: #Entramos aquí si la función anterior devuelve None
+        return None
+    with open(uri.split(sep)[-1], 'wb') as f: #Si no es None, escribimos el contenido en un archivo
+        f.write(contenido)
+        return uri
+

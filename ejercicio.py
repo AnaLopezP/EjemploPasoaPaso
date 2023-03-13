@@ -14,10 +14,13 @@ import html.parser
 async def wget(session, uri): #Devuelve el contenido indicado por la URI
     async with session.get(uri) as response: #Conectamos con el servidor y analizamos su respuesta
         if response.status != 200:
+            print("hola")
             return None #Ha dado error así que pasamos
         if response.content_type.startswith("text/"):
+            print("adios")
             return await response.text() #que devuelva esto si es un texto
         else:
+            print("algo")
             return await response.read()
         
 async def descargar(session, uri):
@@ -30,10 +33,14 @@ async def descargar(session, uri):
         return uri
 
 async def get_images_src_from_html(doc_html): #cogemos el src de las imágenes 
+    print("porfaplz")
     soup = BeautifulSoup(doc_html, "html.parser")
-    for img in soup.find_all("img"): #buscamos en cada imagen de soup
+    print("haol")
+    for img in soup.find_all(): #buscamos en cada imagen de soup
+        print("ay no c")
         yield img.get("src") #cogemos el src
         await asyncio.sleep(0.001) #esperamos 
+        
 
 async def get_uri_from_images_src(base_uri, images_src):
     #Miramos en caso de que la uri sea absoluta o relativa
@@ -58,6 +65,7 @@ async def get_uri_from_images_src(base_uri, images_src):
 
 async def get_images(session, page_uri): #Recupera las uri de todas las imagenes de ua pagina
     html = await wget(session, page_uri) #Volvemos a llamar a la funcion wget
+    print("HE llegado hasta aquí")
     if not html: #Entramos aquí si la web no es html
         print("No se encuentra imagen", stderr)
         return None
@@ -74,8 +82,6 @@ async def main():
     async with ClientSession() as session:
         await get_images(session, web_page_uri)
 
-asyncio.run(main())
-
 def write_in_file(nombre, contenido):
     with open(nombre, "wb") as f:
         f.write(contenido)
@@ -88,7 +94,10 @@ async def download(session, uri):
     await loop.run_in_executor(None, partial(write_in_file, uri.split(sep)[-1], contenido))
     return uri
 
-if __name__ == "__main__":
+'''if __name__ == "__main__":
     print("EMPEZANDO LA DESCARGA DEL TANG")
     web_page_uri = "http://inspyration.org"
-    print(timeit("get_images(web_page_uri)", number = 10, setup = "from __main__ import get_images, web_page_uri"))
+    print(timeit("get_images(web_page_uri)", number = 10, setup = "from __main__ import get_images, web_page_uri"))'''
+
+
+asyncio.run(main())

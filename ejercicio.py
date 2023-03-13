@@ -29,3 +29,9 @@ async def descargar(session, uri):
         f.write(contenido)
         return uri
 
+async def get_images_src_from_html(doc_html): #cogemos el src de las imágenes 
+    soup = BeautifulSoup(doc_html, "html.parser")
+    for img in soup.find_all("img"): #buscamos en cada imagen de soup
+        yield img.get("src") #cogemos el src
+        await asyncio.sleep(0.001) #esperamos 
+
